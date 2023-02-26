@@ -1,0 +1,56 @@
+"Fossies" - the Fresh Open Source Software Archive 
+Member "Django-3.2.18/django/contrib/admin/templates/admin/index.html" (14 Feb 2023, 1861 Bytes) of package /linux/www/Django-3.2.18.tar.gz:
+As a special service "Fossies" has tried to format the requested source page into HTML format using (guessed) HTML source code syntax highlighting (style: standard) with prefixed line numbers. Alternatively you can here view or download the uninterpreted source code file.
+    1 {% extends "admin/base_site.html" %}
+    2 {% load i18n static %}
+    3 
+    4 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+    5 
+    6 {% block coltype %}colMS{% endblock %}
+    7 
+    8 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+    9 
+   10 {% block breadcrumbs %}{% endblock %}
+   11 
+   12 {% block nav-sidebar %}{% endblock %}
+   13 
+   14 {% block content %}
+   15 <div id="content-main">
+   16   {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+   17 </div>
+   <div>
+    This is an extra content
+   </div>
+   18 {% endblock %}
+   19 
+   20 {% block sidebar %}
+   21 <div id="content-related">
+   22     <div class="module" id="recent-actions-module">
+   23         <h2>{% translate 'Recent actions' %}</h2>
+   24         <h3>{% translate 'My actions' %}</h3>
+   25             {% load log %}
+   26             {% get_admin_log 10 as admin_log for_user user %}
+   27             {% if not admin_log %}
+   28             <p>{% translate 'None available' %}</p>
+   29             {% else %}
+   30             <ul class="actionlist">
+   31             {% for entry in admin_log %}
+   32             <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+   33                 {% if entry.is_deletion or not entry.get_admin_url %}
+   34                     {{ entry.object_repr }}
+   35                 {% else %}
+   36                     <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+   37                 {% endif %}
+   38                 <br>
+   39                 {% if entry.content_type %}
+   40                     <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+   41                 {% else %}
+   42                     <span class="mini quiet">{% translate 'Unknown content' %}</span>
+   43                 {% endif %}
+   44             </li>
+   45             {% endfor %}
+   46             </ul>
+   47             {% endif %}
+   48     </div>
+   49 </div>
+   50 {% endblock %}
